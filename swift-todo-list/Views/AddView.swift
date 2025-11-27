@@ -8,7 +8,13 @@
 import SwiftUI
 
 struct AddView: View {
-    @State var textFieldText: String = "";
+    @Environment(\.presentationMode) var presentationMode
+    
+    @EnvironmentObject var listViewModel : ListViewModel
+    @State var textFieldText: String = ""
+    
+    @State var alertTitle: String = ""
+    @State var showAlert: Bool = false
     
     var body: some View {
         VStack{
@@ -18,9 +24,7 @@ struct AddView: View {
                 .background(Color.gray.opacity(0.1))
                 .clipShape(RoundedRectangle(cornerRadius: 10))
             
-            Button(action: {
-                
-            }, label: {
+            Button(action: saveButtonPressed, label: {
                 Text("save".uppercased())
                     .foregroundStyle(.white)
                     .font(.headline)
@@ -34,12 +38,34 @@ struct AddView: View {
         }
         .padding(14)
         .navigationTitle(Text("Add an item 🖋️"))
+        .alert(alertTitle, isPresented: $showAlert){
+            Button("Ok", role: .cancel){}
+        }
     }
+    
+    func saveButtonPressed(){
+        if(isTextAppropriate()){
+            listViewModel.addItem(title: textFieldText)
+            presentationMode.wrappedValue.dismiss()
+        }
+    }
+    
+    func isTextAppropriate() -> Bool {
+        if(textFieldText.count < 3 ){
+            alertTitle = "Your item must be over 3 characters long"
+            showAlert.toggle()
+            return false
+        }
+        
+        return true
+    }
+    
 }
 
 #Preview {
     NavigationView{
         AddView()
     }
+    .environmentObject(ListViewModel())
 }
  
