@@ -17,7 +17,7 @@ struct swift_todo_listApp: App {
             NavigationView{
                 ListView()
             }
-            .environmentObject(listViewmodel  )
+            .environmentObject(listViewmodel)
         }
     }
 }
